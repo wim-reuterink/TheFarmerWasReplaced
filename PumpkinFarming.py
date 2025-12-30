@@ -1,10 +1,29 @@
 from Moving import moveTo
 
 def plantSinglePumpkin():
+	harvest()
 	if get_ground_type() != Grounds.Soil:
 		till()
-	harvest()
+	use_item(Items.Water)
 	plant(Entities.Pumpkin)
+
+def plantColumnOfPumpkin():
+	plantSinglePumpkin()
+	for _ in range(get_world_size()-1):
+		move(North)
+		plantSinglePumpkin()
+
+def initialPlant():
+	for i in range(get_world_size()-2):
+		while True:
+			if spawn_drone(plantColumnOfPumpkin):
+				move(East)
+				break
+	plantColumnOfPumpkin()
+	move(North)
+	move(East)
+	plantColumnOfPumpkin()
+	move(North)
 
 def farmPumpkins():
 	x, y = get_pos_x(), get_pos_y()
@@ -15,26 +34,21 @@ def farmPumpkins():
 	
 	firstPumpinId = 0
 	lastPumpinId = 1
-	roundCount = 0
 	
+	initialPlant()
 	replanted = []
-	while True:
-		newReplanted=[]
-		if num_items(Items.Carrot) < 1000 or num_items(Items.Wood) <1000:
-			return
-		for i in range(get_world_size()):
-			for y in range(get_world_size()):
-				if get_entity_type()!=Entities.Pumpkin:
-					plantSinglePumpkin()
-					currentPosX, CurrentPosY = get_pos_x(), get_pos_y()
-					newReplanted.append((currentPosX, CurrentPosY))	
-				move(East)
-			move(North)
-		replanted = newReplanted
-		roundCount = roundCount + 1
-		if roundCount >= 2:
-			break
-			
+	if num_items(Items.Carrot) < 1000 or num_items(Items.Wood) <1000:
+		return
+	for i in range(get_world_size()):
+		for y in range(get_world_size()):
+			if get_entity_type()!=Entities.Pumpkin:
+				plantSinglePumpkin()
+				replanted.append((get_pos_x(), get_pos_y()))	
+			move(East)
+		move(North)
+	
+	
+	newReplanted=[]		
 	while True:
 		newReplanted=[]
 		if len(replanted) == 0:
@@ -43,8 +57,7 @@ def farmPumpkins():
 			moveTo(i[0], i[1])
 			if get_entity_type()!=Entities.Pumpkin:
 				plantSinglePumpkin()
-				currentPosX, CurrentPosY = get_pos_x(), get_pos_y()
-				newReplanted.append((currentPosX, CurrentPosY))
+				newReplanted.append((get_pos_x(), get_pos_y()))
 		replanted = newReplanted
 		
 	moveTo(0,0)

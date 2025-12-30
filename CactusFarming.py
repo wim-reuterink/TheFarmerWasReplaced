@@ -1,8 +1,30 @@
 from Moving import moveToZero
 
+def plantCactus():
+	harvest()
+	if get_ground_type() != Grounds.Soil:
+		till()
+	plant(Entities.Cactus)
+
+def plantColumnOfCactai():
+	plantCactus()
+	for _ in range(get_world_size()-1):
+		move(North)
+		plantCactus()
+
+def initialPlant():
+	moveToZero()
+	for i in range(get_world_size()-1):
+		while True:
+			if spawn_drone(plantColumnOfCactai):
+				move(East)
+				break
+	plantColumnOfCactai()
+	move(North)
+
 def plantCactai():
 	moveToZero()
-	for i in range(get_world_size()):
+	for i in range(get_world_size()-1):
 		for y in range(get_world_size()):
 			harvest()
 			if get_ground_type() != Grounds.Soil:
@@ -48,21 +70,31 @@ def sortRow():
 def sortVertically():
 	moveToZero()
 	
-	for i in range(get_world_size()):
-		sortColumn()
-		move(East)
+	for i in range(get_world_size()-1):
+		while True:
+			if spawn_drone(sortColumn):
+				move(East)
+				break
+	sortColumn()
+	move(North)
+	do_a_flip()
 	return
 
 def sortHorizontally():
 	moveToZero()
-		
-	for i in range(get_world_size()):
-		sortRow()
-		move(North)
-	return		
+	
+	for i in range(get_world_size()-1):
+		while True:
+			if spawn_drone(sortRow):
+				move(North)
+				break
+	sortRow()
+	move(North)
+	do_a_flip()
+	return	
 
 def farmCactai():
-	plantCactai()
+	initialPlant()
 	sortVertically()
 	sortHorizontally()
 	harvest()
