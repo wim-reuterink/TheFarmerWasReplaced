@@ -6,7 +6,7 @@ def plantMaze():
 	if get_ground_type() == Grounds.Soil:
 		till()
 	plant(Entities.Bush)
-	amoundOfWeirdSub = get_world_size() * num_unlocked(Unlocks.Mazes) * 2
+	amoundOfWeirdSub = get_world_size() * num_unlocked(Unlocks.Mazes) * 3.2
 	use_item(Items.Weird_Substance, amoundOfWeirdSub)
 
 directions = [North, East, South, West]

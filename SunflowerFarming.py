@@ -22,6 +22,8 @@ def plantSunflowersDrones():
 				break
 	plantColumnOfSF()
 	move(North)
+	do_a_flip()
+	do_a_flip()
 
 def plantSunflowers():
 	moveTo(0,0)
@@ -81,4 +83,4 @@ def farmSunflowers():
 	sfMap = measureSunflowers()
 	harvestSunflowers(sfMap)
 	
-farmSunflowers()
+#farmSunflowers()

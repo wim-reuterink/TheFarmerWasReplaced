@@ -1,7 +1,6 @@
 from Moving import moveTo
 
 def plantSinglePumpkin():
-	harvest()
 	if get_ground_type() != Grounds.Soil:
 		till()
 	use_item(Items.Water)
@@ -14,16 +13,60 @@ def plantColumnOfPumpkin():
 		plantSinglePumpkin()
 
 def initialPlant():
-	for i in range(get_world_size()-2):
+	for i in range(get_world_size()-1):
 		while True:
 			if spawn_drone(plantColumnOfPumpkin):
 				move(East)
 				break
 	plantColumnOfPumpkin()
 	move(North)
-	move(East)
-	plantColumnOfPumpkin()
-	move(North)
+
+
+def replantColumn():
+	replanted = []
+	for y in range(get_world_size()):
+		if can_harvest() == False and get_entity_type() != Entities.Pumpkin:
+			plantSinglePumpkin()
+			replanted.append((get_pos_x(), get_pos_y()))	
+		move(North)
+	newReplanted=[]
+	do_a_flip()		
+	while True:
+		newReplanted=[]
+		if len(replanted) == 0:
+			break
+		for i in replanted:
+			moveTo(i[0], i[1])
+			if get_entity_type() != Entities.Pumpkin:
+				plantSinglePumpkin()
+				newReplanted.append((get_pos_x(), get_pos_y()))
+		replanted = newReplanted
+
+
+def measureUntilHarvest():
+	moveTo(0,0)
+	while True:
+		firstPumpinId = measure()
+		move(South)
+		move(West)
+		lastPumpinId = measure()
+		if firstPumpinId == lastPumpinId:
+			harvest()
+			return
+		move(North)
+		move(East)
+
+def farmPumpkinsWithDrones():
+	moveTo(0,0)
+	initialPlant()
+	
+	for i in range(get_world_size()):
+		while True:
+			if spawn_drone(replantColumn):
+				move(East)
+				break
+	
+	measureUntilHarvest()
 
 def farmPumpkins():
 	x, y = get_pos_x(), get_pos_y()
@@ -67,3 +110,6 @@ def farmPumpkins():
 	if firstPumpinId == lastPumpinId:
 		harvest()
 		return
+		
+#farmPumpkins()
+#farmPumpkinsWithDrones()

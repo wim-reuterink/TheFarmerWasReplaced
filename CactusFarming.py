@@ -40,7 +40,6 @@ def sortColumn():
 			if y == get_world_size()-1:
 				move(North)
 				continue
-				
 			current = measure()
 			north = measure(North)
 			if current > north:
@@ -57,7 +56,6 @@ def sortRow():
 			if y == get_world_size()-1:
 				move(East)
 				continue
-				
 			current = measure()
 			east = measure(East)
 			if current > east:
@@ -70,27 +68,30 @@ def sortRow():
 def sortVertically():
 	moveToZero()
 	
-	for i in range(get_world_size()-1):
+	for i in range(get_world_size()-2):
 		while True:
 			if spawn_drone(sortColumn):
 				move(East)
 				break
 	sortColumn()
+	move(East)
+	sortColumn()
+	move(East)
 	move(North)
-	do_a_flip()
 	return
 
 def sortHorizontally():
 	moveToZero()
 	
-	for i in range(get_world_size()-1):
+	for i in range(get_world_size()-2):
 		while True:
 			if spawn_drone(sortRow):
 				move(North)
 				break
 	sortRow()
 	move(North)
-	do_a_flip()
+	sortRow()
+	move(North)
 	return	
 
 def farmCactai():
@@ -98,3 +99,6 @@ def farmCactai():
 	sortVertically()
 	sortHorizontally()
 	harvest()
+
+#while True:	
+#	farmCactai()

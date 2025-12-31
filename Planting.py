@@ -31,7 +31,7 @@ def plantTree():
 		if y % 2 == 0:
 			plantHay()
 			return
-	#use_item(Items.Water)
+	use_item(Items.Water)
 	plant(Entities.Tree)
 
 def plantLowest():
