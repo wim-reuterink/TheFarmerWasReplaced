@@ -1,6 +1,7 @@
 from Moving import moveTo
 
 def plantSinglePumpkin():
+	harvest()
 	if get_ground_type() != Grounds.Soil:
 		till()
 	use_item(Items.Water)
@@ -22,11 +23,28 @@ def initialPlant():
 	move(North)
 
 
+def replantColumnFullCheck():
+	previousAmount = get_world_size()
+	while True:
+		amount = 0
+		for y in range(get_world_size()):
+			replanted = False
+			if get_entity_type() != Entities.Pumpkin:
+				plantSinglePumpkin()
+				replanted = True
+				amount += 1
+			move(North)
+		if replanted == False:# or amount > previousAmount:
+			return
+		previousAmount = amount
+
 def replantColumn():
 	replanted = []
 	for y in range(get_world_size()):
-		if can_harvest() == False and get_entity_type() != Entities.Pumpkin:
+		if get_entity_type() != Entities.Pumpkin:
 			plantSinglePumpkin()
+			replanted.append((get_pos_x(), get_pos_y()))	
+		if can_harvest() == False:
 			replanted.append((get_pos_x(), get_pos_y()))	
 		move(North)
 	newReplanted=[]
@@ -41,7 +59,7 @@ def replantColumn():
 				plantSinglePumpkin()
 				newReplanted.append((get_pos_x(), get_pos_y()))
 		replanted = newReplanted
-
+	replantColumnFullCheck()
 
 def measureUntilHarvest():
 	moveTo(0,0)

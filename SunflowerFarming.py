@@ -27,23 +27,24 @@ def plantSunflowersDrones():
 
 def plantSunflowers():
 	moveTo(0,0)
-	size = get_world_size() 
+	size = get_world_size()
 	for i in range(size):
 		for y in range(size):
 			plantSingleSF()
 			move(East)
-		move(North)		
-	
+		move(North)
+
 def measureSunflowers():
+	size = get_world_size()
+
 	while True:
 		readyToHarvest = True
-		size = get_world_size() 
 		for i in range(size):
 			for y in range(size):
 				if can_harvest() == False:
 					readyToHarvest = False
 				move(East)
-			move(North)		
+			move(North)
 		if readyToHarvest:
 			break
 	sfMap = {}
@@ -56,14 +57,39 @@ def measureSunflowers():
 			petalCount = measure()
 			sfMap[petalCount].append(getLocation())
 			move(East)
-		move(North)		
+		move(North)
 	return sfMap
-	
+
+def measureSunflowersV2():
+	sfMap = {}
+	r = range(15, 6, -1)
+	for num in r:
+		sfMap[num] = []
+
+	size = get_world_size()
+
+	for i in range(size):
+		for y in range(size):
+			petalCount = measure()
+			sfMap[petalCount].append(getLocation())
+			move(East)
+		move(North)
+	return sfMap
+
 def harvestSingleFlower(xcoord, ycoord):
 	def	harvestSSF():
 		moveTo(xcoord, ycoord)
 		harvest()
-	return harvestSSF	
+	return harvestSSF
+
+def harvestSpecificSizeAtColumn(petalCount):
+	def	harvestPetalCountFromColumn():
+		for i in range(get_world_size()):
+			if measure() == petalCount:
+				harvest()
+			move(North)
+	return harvestPetalCountFromColumn
+
 
 def harvestSunflowers(sfMap):
 	for pc in range(15, 6, -1):
@@ -77,10 +103,59 @@ def harvestSunflowers(sfMap):
 					break
 		do_a_flip()
 
+def harvestSunflowersV2():
+	moveTo(0,0)
+	for pc in range(15, 6, -1):
+		for i in range(get_world_size()):
+			while True:
+				if spawn_drone(harvestSpecificSizeAtColumn(pc)):
+					break
+			move(east)
+		do_a_flip()
+		do_a_flip()
+		do_a_flip()
+		do_a_flip()
+
 def farmSunflowers():
 	moveTo(0,0)
 	plantSunflowersDrones()
 	sfMap = measureSunflowers()
 	harvestSunflowers(sfMap)
-	
-#farmSunflowers()
+
+def farmSunflowersv2():
+	moveTo(0,0)
+	plantSunflowersDrones()
+	sfMap = measureSunflowersV2()
+	harvestSunflowers(sfMap)
+
+def farmSunflowersv3():
+	moveTo(0,0)
+	plantSunflowersDrones()
+	harvestSunflowersV2()
+
+def printValues(title, powerFarmed, ticksElapsed):
+	quick_print(title)
+	quick_print("Power farmed:" + powerFarmed)
+	quick_print("Ticks elapsed:" + ticksElapsed)
+
+before = num_items(Items.Power)
+beforeTC = get_tick_count()
+farmSunflowers()
+after = num_items(Items.Power)
+afterTC = get_tick_count()
+printValues("Power 1:", after - before, afterTC - beforeTC)
+
+before = num_items(Items.Power)
+beforeTC = get_tick_count()
+farmSunflowersv2()
+after = num_items(Items.Power)
+afterTC = get_tick_count()
+printValues("Power 2:", after - before, afterTC - beforeTC)
+
+before = num_items(Items.Power)
+beforeTC = get_tick_count()
+farmSunflowersv3()
+after = num_items(Items.Power)
+afterTC = get_tick_count()
+printValues("Power 3:", after - before, afterTC - beforeTC)
+
