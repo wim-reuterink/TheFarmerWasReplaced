@@ -44,11 +44,11 @@ def sortColumn():
 			north = measure(North)
 			if current > north:
 				swap(North)
-				swapped = True	
+				swapped = True
 			move(North)
 		if swapped == False:
 			return
-			
+
 def sortRow():
 	while True:
 		swapped = False
@@ -60,14 +60,14 @@ def sortRow():
 			east = measure(East)
 			if current > east:
 				swap(East)
-				swapped = True	
+				swapped = True
 			move(East)
 		if swapped == False:
 			return
 
 def sortVertically():
 	moveToZero()
-	
+
 	for i in range(get_world_size()-2):
 		while True:
 			if spawn_drone(sortColumn):
@@ -82,7 +82,7 @@ def sortVertically():
 
 def sortHorizontally():
 	moveToZero()
-	
+
 	for i in range(get_world_size()-2):
 		while True:
 			if spawn_drone(sortRow):
@@ -92,7 +92,7 @@ def sortHorizontally():
 	move(North)
 	sortRow()
 	move(North)
-	return	
+	return
 
 def farmCactai():
 	initialPlant()
@@ -100,5 +100,5 @@ def farmCactai():
 	sortHorizontally()
 	harvest()
 
-#while True:	
-#	farmCactai()
+#while True:
+# farmCactai()

@@ -110,52 +110,52 @@ def harvestSunflowersV2():
 			while True:
 				if spawn_drone(harvestSpecificSizeAtColumn(pc)):
 					break
-			move(east)
-		do_a_flip()
-		do_a_flip()
+			move(East)
 		do_a_flip()
 		do_a_flip()
 
-def farmSunflowers():
+def farmSunflowersV1():
 	moveTo(0,0)
 	plantSunflowersDrones()
 	sfMap = measureSunflowers()
 	harvestSunflowers(sfMap)
 
-def farmSunflowersv2():
+def farmSunflowersV2():
 	moveTo(0,0)
 	plantSunflowersDrones()
 	sfMap = measureSunflowersV2()
 	harvestSunflowers(sfMap)
 
-def farmSunflowersv3():
+def farmSunflowersV3():
 	moveTo(0,0)
 	plantSunflowersDrones()
 	harvestSunflowersV2()
 
+def farmSunflowers():
+	farmSunflowersV3()
+	
 def printValues(title, powerFarmed, ticksElapsed):
 	quick_print(title)
-	quick_print("Power farmed:" + powerFarmed)
-	quick_print("Ticks elapsed:" + ticksElapsed)
+	quick_print("Power farmed:" + str(powerFarmed))
+	quick_print("Ticks elapsed:" + str(ticksElapsed))
 
-before = num_items(Items.Power)
-beforeTC = get_tick_count()
-farmSunflowers()
-after = num_items(Items.Power)
-afterTC = get_tick_count()
-printValues("Power 1:", after - before, afterTC - beforeTC)
+#before = num_items(Items.Power)
+#beforeTC = get_tick_count()
+#farmSunflowers()
+#after = num_items(Items.Power)
+#afterTC = get_tick_count()
+#printValues("Power 1:", after - before, afterTC - beforeTC)
 
-before = num_items(Items.Power)
-beforeTC = get_tick_count()
-farmSunflowersv2()
-after = num_items(Items.Power)
-afterTC = get_tick_count()
-printValues("Power 2:", after - before, afterTC - beforeTC)
+#before = num_items(Items.Power)
+#beforeTC = get_tick_count()
+#farmSunflowersv2()
+#after = num_items(Items.Power)
+#afterTC = get_tick_count()
+#printValues("Power 2:", after - before, afterTC - beforeTC)
 
-before = num_items(Items.Power)
-beforeTC = get_tick_count()
-farmSunflowersv3()
-after = num_items(Items.Power)
-afterTC = get_tick_count()
-printValues("Power 3:", after - before, afterTC - beforeTC)
-
+#before = num_items(Items.Power)
+#beforeTC = get_tick_count()
+#farmSunflowersv3()
+#after = num_items(Items.Power)
+#afterTC = get_tick_count()
+#printValues("Power 3:", after - before, afterTC - beforeTC)
