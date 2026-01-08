@@ -20,18 +20,20 @@ OPPOSITE_DIRECTION = {
 
 def findTreasure(lastMove, x, y):
 	startAndIntersection = False
-	count = 0
-	for direction in directions:
-		if can_move(direction):
-			count += 1
-	if count == 2:
-		startAndIntersection = True
+	if lastMove == None:
+		count = 0
+		for direction in directions:
+			if can_move(direction):
+				count += 1
+		if count == 2:
+			startAndIntersection = True
 	previousMove = lastMove
 
 	while True:
 		hasMoved = False
 		if get_pos_x() == x and get_pos_y() == y:
 			harvest()
+			clear()
 			return True
 
 		if isIntersection() or startAndIntersection:
@@ -39,12 +41,13 @@ def findTreasure(lastMove, x, y):
 			for direction in directions:
 				if can_move(direction) and (direction != OPPOSITE_DIRECTION[previousMove]):
 					possibleDirections.append(direction)
-
-			for i in range(len(directions)-1):
+			if len(possibleDirections) == 0:
+				return
+			for i in range(len(possibleDirections)-1):
 				while True:
-					if spawn_drone(subDroneSolveMaze(directions.pop())):
+					if spawn_drone(subDroneSolveMaze(possibleDirections.pop())):
 						break
-			direction = directions.pop()
+			direction = possibleDirections.pop()
 			move(direction)
 			previousMove = direction
 		else:
@@ -65,12 +68,23 @@ def solveMaze():
 
 def subDroneSolveMaze(lastMove):
 	def	subDroneSolveMazeParams():
-		x, y = measure()
-		move(lastMove)
+		result = measure()
+		if result == None:
+			return
+		if len(result) != 2:
+			return
+		x, y = result
+		if lastMove != None:
+			move(lastMove)
 		findTreasure(lastMove, x, y)
 	return subDroneSolveMazeParams
 
-
 while True:
 	clear()
-	solveMaze()
+	plantMaze()
+	while True:
+		if spawn_drone(subDroneSolveMaze(None)):
+			break
+	while num_drones() != 1:
+		do_a_flip()
+
