@@ -1,13 +1,5 @@
 from Moving import moveTo
-
-def plantMaze():
-	moveTo(0,0)
-	clear()
-	if get_ground_type() == Grounds.Soil:
-		till()
-	plant(Entities.Bush)
-	amoundOfWeirdSub = get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
-	use_item(Items.Weird_Substance, amoundOfWeirdSub)
+from Mazing import plantMaze
 
 directions = [North, East, South, West]
 def isIntersection():
@@ -16,7 +8,6 @@ def isIntersection():
 		if can_move(direction):
 			count += 1
 	return count>=3
-
 
 OPPOSITE_DIRECTION = {
 	North: South,
@@ -29,16 +20,14 @@ OPPOSITE_DIRECTION = {
 
 def findTreasure(lastMove, x, y):
 	startAndIntersection = False
-	if lastMove == None:
-		count = 0
-		for direction in directions:
-			if can_move(direction):
-				count += 1
-		if count == 2:
-			startAndIntersection = True
-
-	movesToRevert = []
+	count = 0
+	for direction in directions:
+		if can_move(direction):
+			count += 1
+	if count == 2:
+		startAndIntersection = True
 	previousMove = lastMove
+
 	while True:
 		hasMoved = False
 		if get_pos_x() == x and get_pos_y() == y:
@@ -46,36 +35,42 @@ def findTreasure(lastMove, x, y):
 			return True
 
 		if isIntersection() or startAndIntersection:
+			possibleDirections = []
 			for direction in directions:
 				if can_move(direction) and (direction != OPPOSITE_DIRECTION[previousMove]):
-					move(direction)
-					foundTreasure = findTreasure(direction, x, y)
-					if foundTreasure == True:
-						return True
-			break
+					possibleDirections.append(direction)
+
+			for i in range(len(directions)-1):
+				while True:
+					if spawn_drone(subDroneSolveMaze(directions.pop())):
+						break
+			direction = directions.pop()
+			move(direction)
+			previousMove = direction
 		else:
 			for direction in directions:
 				if can_move(direction) and direction != OPPOSITE_DIRECTION[previousMove]:
 					previousMove = direction
-					movesToRevert.append(direction)
 					move(direction)
 					hasMoved = True
 					break
 			if hasMoved == False:
 				break
-
-	for backtrackMove in movesToRevert[::-1]:
-		move(OPPOSITE_DIRECTION[backtrackMove])
-	if lastMove != None:
-		move(OPPOSITE_DIRECTION[lastMove])
 	return False
-
 
 def solveMaze():
 	plantMaze()
 	x, y = measure()
 	findTreasure(None, x, y)
 
-#while True:
-#	clear()
-#	solveMaze()
+def subDroneSolveMaze(lastMove):
+	def	subDroneSolveMazeParams():
+		x, y = measure()
+		move(lastMove)
+		findTreasure(lastMove, x, y)
+	return subDroneSolveMazeParams
+
+
+while True:
+	clear()
+	solveMaze()
