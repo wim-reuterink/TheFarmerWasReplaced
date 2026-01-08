@@ -24,31 +24,27 @@ def initialPlant():
 
 
 def replantColumnFullCheck():
-	previousAmount = get_world_size()
-	while True:
-		amount = 0
-		for y in range(get_world_size()):
-			replanted = False
-			if get_entity_type() != Entities.Pumpkin:
-				plantSinglePumpkin()
-				replanted = True
-				amount += 1
-			move(North)
-		if replanted == False:# or amount > previousAmount:
-			return
-		previousAmount = amount
+	replanted = False
+	for y in range(get_world_size()):
+		if get_entity_type() != Entities.Pumpkin:
+			plantSinglePumpkin()
+			replanted = True
+		move(North)
+	if replanted == False:
+		return
+	do_a_flip()
+	replantColumn()
 
 def replantColumn():
 	replanted = []
 	for y in range(get_world_size()):
 		if get_entity_type() != Entities.Pumpkin:
 			plantSinglePumpkin()
-			replanted.append((get_pos_x(), get_pos_y()))	
+			replanted.append((get_pos_x(), get_pos_y()))
 		if can_harvest() == False:
-			replanted.append((get_pos_x(), get_pos_y()))	
+			replanted.append((get_pos_x(), get_pos_y()))
 		move(North)
 	newReplanted=[]
-	do_a_flip()		
 	while True:
 		newReplanted=[]
 		if len(replanted) == 0:
@@ -64,70 +60,20 @@ def replantColumn():
 def measureUntilHarvest():
 	moveTo(0,0)
 	while True:
-		firstPumpinId = measure()
-		move(South)
-		move(West)
-		lastPumpinId = measure()
-		if firstPumpinId == lastPumpinId:
-			harvest()
-			return
-		move(North)
-		move(East)
+		if num_drones() == 1:
+			break
+	harvest()
 
 def farmPumpkinsWithDrones():
 	moveTo(0,0)
 	initialPlant()
-	
+
 	for i in range(get_world_size()):
 		while True:
 			if spawn_drone(replantColumn):
 				move(East)
 				break
-	
+
 	measureUntilHarvest()
 
-def farmPumpkins():
-	x, y = get_pos_x(), get_pos_y()
-	for i in range(x):
-		move(West)
-	for i in range(y):
-		move(South)
-	
-	firstPumpinId = 0
-	lastPumpinId = 1
-	
-	initialPlant()
-	replanted = []
-	if num_items(Items.Carrot) < 1000 or num_items(Items.Wood) <1000:
-		return
-	for i in range(get_world_size()):
-		for y in range(get_world_size()):
-			if get_entity_type()!=Entities.Pumpkin:
-				plantSinglePumpkin()
-				replanted.append((get_pos_x(), get_pos_y()))	
-			move(East)
-		move(North)
-	
-	
-	newReplanted=[]		
-	while True:
-		newReplanted=[]
-		if len(replanted) == 0:
-			break
-		for i in replanted:
-			moveTo(i[0], i[1])
-			if get_entity_type()!=Entities.Pumpkin:
-				plantSinglePumpkin()
-				newReplanted.append((get_pos_x(), get_pos_y()))
-		replanted = newReplanted
-		
-	moveTo(0,0)
-	firstPumpinId = measure()
-	moveTo(get_world_size()-1, get_world_size()-1)
-	lastPumpinId = measure()
-	if firstPumpinId == lastPumpinId:
-		harvest()
-		return
-		
-#farmPumpkins()
 #farmPumpkinsWithDrones()

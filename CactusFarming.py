@@ -68,13 +68,11 @@ def sortRow():
 def sortVertically():
 	moveToZero()
 
-	for i in range(get_world_size()-2):
+	for i in range(get_world_size()-1):
 		while True:
 			if spawn_drone(sortColumn):
 				move(East)
 				break
-	sortColumn()
-	move(East)
 	sortColumn()
 	move(East)
 	move(North)
@@ -83,22 +81,29 @@ def sortVertically():
 def sortHorizontally():
 	moveToZero()
 
-	for i in range(get_world_size()-2):
+	for i in range(get_world_size()-1):
 		while True:
 			if spawn_drone(sortRow):
 				move(North)
 				break
 	sortRow()
 	move(North)
-	sortRow()
-	move(North)
 	return
 
 def farmCactai():
 	initialPlant()
+	while True:
+		if num_drones() == 1:
+			break
 	sortVertically()
+	while True:
+		if num_drones() == 1:
+			break
 	sortHorizontally()
+	while True:
+		if num_drones() == 1:
+			break
 	harvest()
 
 #while True:
-# farmCactai()
+#farmCactai()
